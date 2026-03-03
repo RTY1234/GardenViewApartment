@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garden View Apartment - Guest Information</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f7f7f7;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+        }
+
+        header {
+            padding: 20px 0;
+            border-bottom: 1px solid #e0e0e0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .stars {
+            color: #FF385C;
+        }
+
+        .location {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .welcome-message {
+            background-color: #f0f7ff;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .welcome-message h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .info-box {
+            background-color: #fff4e6;
+            border: 1px solid #ffd700;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .info-box strong {
+            color: #ff6b35;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin: 30px 0;
+        }
+
+        .content-section {
+            margin-bottom: 40px;
+        }
+
+        .content-section h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #667eea;
+            color: #667eea;
+        }
+
+        .contact-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .contact-card h3 {
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .contact-card p {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .contact-card a {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .features {
+            margin: 30px 0;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .feature-item {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .feature-icon {
+            font-size: 24px;
+            min-width: 30px;
+        }
+
+        .feature-text h4 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .feature-text p {
+            color: #717171;
+            font-size: 14px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .info-card {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .info-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .info-card p {
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .info-card ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .info-card li {
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .emergency-banner {
+            background-color: #ff4444;
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .amenities-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .amenity-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .amenity-icon {
+            font-size: 20px;
+        }
+
+        .wifi-code {
+            background-color: #667eea;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            letter-spacing: 2px;
+            margin: 15px 0;
+        }
+
+        .map-placeholder {
+            width: 100%;
+            height: 400px;
+            background-color: #e0e0e0;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #717171;
+            margin-top: 20px;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 40px;
+            padding: 30px 0;
+            border-top: 1px solid #e0e0e0;
+            text-align: center;
+            color: #717171;
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .amenities-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Password Protection Overlay */
+        #password-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        #password-overlay.hidden {
+            display: none;
+        }
+
+        .password-box {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .password-box h2 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .password-box p {
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .password-box input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            transition: border-color 0.3s;
+        }
+
+        .password-box input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .password-box button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(to right, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .password-box button:hover {
+            transform: translateY(-2px);
+        }
+
+        .password-error {
+            color: #ff4444;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .password-error.show {
+            display: block;
+        }
+
+        #main-content {
+            display: none;
+        }
+
+        #main-content.visible {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Password Protection Overlay -->
+    <div id="password-overlay">
+        <div class="password-box">
+            <h2>🔒 Guest Access</h2>
+            <p>Please enter the password to view your guest information</p>
+            <input type="password" id="password-input" placeholder="Enter password" autocomplete="off">
+            <button onclick="checkPassword()">Access Information</button>
+            <div class="password-error" id="password-error">Incorrect password. Please try again.</div>
+        </div>
+    </div>
+
+    <div id="main-content">
+    <div class="container">
+        <header>
+            <h1>🌿 Garden View Apartment</h1>
+            <div class="rating">
+                <span class="location">Lienes iela 5, Cēsis, Latvia</span>
+            </div>
+        </header>
+
+        <!-- Welcome Message -->
+        <div class="welcome-message">
+            <h3>Welcome to Garden View Apartment! 👋</h3>
+            <p>We look forward to having you at Garden View Apartment, Lienes iela 5, Cēsis. This page contains all the essential information you'll need during your stay. If you have any questions or concerns, do not hesitate to contact me.</p>
+        </div>
+
+        <!-- Emergency Contact -->
+        <div class="emergency-banner">
+            🚨 Emergency: 112 | Host Contact: +371 29249385
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+                <!-- WiFi Information -->
+                <section class="content-section">
+                    <h2>📶 WiFi Information</h2>
+                    <div class="info-card">
+                        <h3>Network Name (SSID)</h3>
+                        <div class="wifi-code">AirBnB</div>
+                        <h3 style="margin-top: 20px;">Password</h3>
+                        <div class="wifi-code">F87G35FH6AL</div>
+                    </div>
+                </section>
+
+                <!-- Check-in/Check-out -->
+                <section class="content-section">
+                    <h2>🔑 Check-in & Smartlock</h2>
+                    <div class="info-card" style="margin-bottom: 20px;">
+                        <h3>Check-in Time</h3>
+                        <p><strong>From 16:00 till 23:00</strong></p>
+                    </div>
+                    <div class="info-card">
+                        <h3>🔐 Smartlock Instructions</h3>
+                        <p>The apartment is equipped with a smartlock so you can self-check-in and check-out. There is a keypad near the entrance where you will need to provide a PIN code to unlock the door.</p>
+                        <p style="margin-top: 15px; padding: 15px; background-color: #667eea; color: white; border-radius: 8px; font-weight: bold; text-align: center;">⚠️ Your PIN code will be sent separately on the day of arrival</p>
+                        <h4 style="margin-top: 20px; color: #667eea;">How to use the smartlock:</h4>
+                        <ul style="margin-top: 10px;">
+                            <li><strong>To unlock:</strong> Enter your PIN code on the keypad</li>
+                            <li><strong>To lock/unlock from inside:</strong> Rotate the knob on the smartlock</li>
+                            <li><strong>To lock when going out:</strong> Press the arrow button on the keypad and it will immediately lock</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Apartment Guide -->
+                <section class="content-section">
+                    <h2>🏠 Apartment Guide</h2>
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <h3>Kitchen Appliances</h3>
+                            <ul>
+                                <li>Coffee maker - pods in the cabinet</li>
+                                <li>Induction stove - touch controls</li>
+                                <li>Dishwasher - tablets under the sink</li>
+                                <li>Microwave - above the counter</li>
+                                <li>Refrigerator with freezer</li>
+                            </ul>
+                        </div>
+                        <div class="info-card">
+                            <h3>Heating & Cooling</h3>
+                            <ul>
+                                <li>Thermostat on the hallway wall</li>
+                                <li>Recommended setting: 21°C</li>
+                                <li>Floor heating in bathroom</li>
+                                <li>Ceiling fan in bedroom (summer)</li>
+                            </ul>
+                        </div>
+                        <div class="info-card">
+                            <h3>Entertainment</h3>
+                            <ul>
+                                <li>Smart TV with Netflix, HBO</li>
+                                <li>TV remote on the coffee table</li>
+                                <li>Board games in the closet</li>
+                                <li>Books available for reading</li>
+                            </ul>
+                        </div>
+                        <div class="info-card">
+                            <h3>Bathroom</h3>
+                            <ul>
+                                <li>Towels in the bathroom cabinet</li>
+                                <li>Hair dryer under the sink</li>
+                                <li>Complimentary toiletries provided</li>
+                                <li>Washing machine - detergent included</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- House Rules & Important Info -->
+                <section class="content-section">
+                    <h2>📋 House Rules & Important Information</h2>
+                    <div class="info-box">
+                        <ul style="margin: 0; padding-left: 20px;">
+                            <li><strong>Smoking:</strong> Prohibited indoors. You can smoke outdoors by the entrance.</li>
+                            <li><strong>Trash:</strong> The bin is just around the corner of the garage. New trash bags are in the white drawer in the utility room.</li>
+                            <li><strong>Parents on property:</strong> My parents live in the other half of the house but they don't speak English. Please feel free to message me via app or call me for any questions.</li>
+                            <li>No parties or loud events</li>
+                            <li>Please be respectful of neighbors</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Local Recommendations -->
+                <section class="content-section">
+                    <h2>🍽️ Local Recommendations</h2>
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <h3>Restaurants & Cafes</h3>
+                            <ul>
+                                <li><strong>Villa Santa</strong> - Fine dining (10 min walk)</li>
+                                <li><strong>Kebabs</strong> - Quick meals (5 min walk)</li>
+                                <li><strong>Cafe Virāža</strong> - Coffee & pastries (8 min walk)</li>
+                                <li><strong>Fazenda</strong> - Local cuisine (12 min walk)</li>
+                            </ul>
+                        </div>
+                        <div class="info-card">
+                            <h3>Grocery Stores</h3>
+                            <ul>
+                                <li><strong>Rimi</strong> - Supermarket (7 min walk)</li>
+                                <li><strong>Maxima</strong> - Large selection (10 min walk)</li>
+                                <li><strong>Local market</strong> - Fresh produce (Saturday mornings)</li>
+                            </ul>
+                        </div>
+                        <div class="info-card">
+                            <h3>Things to See</h3>
+                            <ul>
+                                <li><strong>Cēsis Castle</strong> - Medieval ruins (15 min walk)</li>
+                                <li><strong>Old Town</strong> - Historic center (10 min walk)</li>
+                                <li><strong>Gauja National Park</strong> - Hiking trails (20 min drive)</li>
+                                <li><strong>Līgatne Nature Trails</strong> - Wildlife park (30 min drive)</li>
+                            </ul>
+                        </div>
+                        <div class="info-card">
+                            <h3>Transportation</h3>
+                            <ul>
+                                <li><strong>Bus station</strong> - 10 minutes walk</li>
+                                <li><strong>Taxi</strong> - Call +371 6412 xxxx</li>
+                                <li><strong>Bolt app</strong> - Available in Cēsis</li>
+                                <li><strong>Free parking</strong> - In front of building</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Contact Information -->
+                <section class="content-section">
+                    <div class="contact-card">
+                        <h3>📞 Contact Information</h3>
+                        <p><strong>Host:</strong> Available for any questions or concerns</p>
+                        <p><strong>Phone/WhatsApp:</strong> <a href="tel:+37129249385">+371 29249385</a></p>
+                        <p style="margin-top: 10px; font-size: 14px;">Feel free to message via app or call me anytime during your stay.</p>
+                        <p style="margin-top: 15px;"><strong>Emergency Services:</strong> 112</p>
+                        <p><strong>Local Police:</strong> 110</p>
+                        <p><strong>Medical Emergency:</strong> 113</p>
+                    </div>
+                </section>
+
+                <!-- Parking -->
+                <section class="content-section">
+                    <h2>🅿️ Parking Information</h2>
+                    <div class="info-card">
+                        <h3>Important Parking Instructions</h3>
+                        <p>Please park your car within the designated zone <strong>without blocking the main gate</strong>.</p>
+                        <p style="margin-top: 10px;">The gate will stay open during your stay, so you can freely drive in and out.</p>
+                        <div class="info-box" style="margin-top: 15px;">
+                            <p><strong>⚠️ Note:</strong> Please refer to the parking zone image that was sent to you for the exact parking area.</p>
+                        </div>
+                    </div>
+                </section>
+        </div>
+
+        <footer>
+            <p>&copy; 2026 Garden View Apartment. We hope you enjoy your stay in Cēsis!</p>
+            <p>For any questions or assistance, contact us at +371 29249385</p>
+        </footer>
+    </div>
+    </div> <!-- End of main-content -->
+
+    <script>
+        // Password protection
+        const PASSWORD = "GardenViewGuest"; // Change this to your desired password
+
+        // Check if already authenticated in this session
+        if (sessionStorage.getItem('authenticated') === 'true') {
+            showContent();
+        }
+
+        // Allow Enter key to submit password
+        document.getElementById('password-input').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                checkPassword();
+            }
+        });
+
+        function checkPassword() {
+            const input = document.getElementById('password-input').value;
+            const errorDiv = document.getElementById('password-error');
+            
+            if (input === PASSWORD) {
+                sessionStorage.setItem('authenticated', 'true');
+                showContent();
+            } else {
+                errorDiv.classList.add('show');
+                document.getElementById('password-input').value = '';
+                document.getElementById('password-input').focus();
+                
+                // Shake animation for error
+                document.querySelector('.password-box').style.animation = 'shake 0.5s';
+                setTimeout(() => {
+                    document.querySelector('.password-box').style.animation = '';
+                }, 500);
+            }
+        }
+
+        function showContent() {
+            document.getElementById('password-overlay').classList.add('hidden');
+            document.getElementById('main-content').classList.add('visible');
+        }
+    </script>
+
+    <style>
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+            20%, 40%, 60%, 80% { transform: translateX(10px); }
+        }
+    </style>
+</body>
+</html>
