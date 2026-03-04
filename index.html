@@ -16,6 +16,7 @@
             line-height: 1.6;
             color: #333;
             background-color: #f7f7f7;
+            scroll-behavior: smooth;
         }
 
         .container {
@@ -84,6 +85,42 @@
         /* Main Content */
         .main-content {
             margin: 30px 0;
+        }
+
+        .quick-nav {
+            background-color: #f0f7ff;
+            border: 1px solid #dbe7ff;
+            border-radius: 10px;
+            padding: 12px;
+            margin: 20px 0;
+            position: sticky;
+            top: 10px;
+            z-index: 10;
+        }
+
+        .quick-nav-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            list-style: none;
+        }
+
+        .quick-nav-list a {
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background-color: white;
+            border: 1px solid #d0ddff;
+            color: #4f5eb8;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .quick-nav-list a:hover {
+            background-color: #667eea;
+            border-color: #667eea;
+            color: white;
         }
 
         .content-section {
@@ -254,6 +291,10 @@
             .amenities-grid {
                 grid-template-columns: 1fr;
             }
+
+            .quick-nav {
+                top: 8px;
+            }
         }
 
         /* Password Protection Overlay */
@@ -363,6 +404,119 @@
             margin-top: 5px;
             font-style: italic;
         }
+
+        .parking-image-container {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .parking-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .parking-overlay polygon {
+            fill: rgba(102, 126, 234, 0.6);
+            stroke: rgba(102, 126, 234, 0.9);
+            stroke-width: 3;
+        }
+
+        .parking-overlay text {
+            fill: white;
+            font-size: 28px;
+            font-weight: bold;
+            text-anchor: middle;
+            dominant-baseline: middle;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .zoomable-image {
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .zoomable-image:hover {
+            opacity: 0.8;
+        }
+
+        .image-modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-modal.active {
+            display: flex;
+        }
+
+        .image-modal img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+
+        .image-modal-close {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .image-modal-close:hover {
+            color: #667eea;
+        }
+
+        .zoom-hint {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background-color: rgba(102, 126, 234, 0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            pointer-events: none;
+        }
+
+        .language-switcher {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .language-btn {
+            border: 1px solid #d0d0d0;
+            background-color: white;
+            color: #333;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .language-btn.active {
+            background-color: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
     </style>
 </head>
 <body>
@@ -377,10 +531,20 @@
         </div>
     </div>
 
+    <!-- Image Modal -->
+    <div id="image-modal" class="image-modal" onclick="closeImageModal()">
+        <span class="image-modal-close">&times;</span>
+        <img id="modal-image" src="" alt="Zoomed image">
+    </div>
+
     <div id="main-content">
     <div class="container">
+        <div class="language-switcher" aria-label="Language selector">
+            <button class="language-btn" id="lang-eng" onclick="setLanguage('eng')">ENG</button>
+            <button class="language-btn" id="lang-lat" onclick="setLanguage('lat')">LAT</button>
+        </div>
         <header>
-            <h1>🌿 Garden View Apartment</h1>
+            <h1 id="main-title">🌿 Garden View Apartment</h1>
             <div class="rating">
                 <span class="location">Lienes iela 5, Cēsis, Latvia</span>
             </div>
@@ -388,187 +552,240 @@
 
         <!-- Welcome Message -->
         <div class="welcome-message">
-            <h3>Welcome to Garden View Apartment! 👋</h3>
-            <p>We look forward to having you at Garden View Apartment, Lienes iela 5, Cēsis. This page contains all the essential information you'll need during your stay. If you have any questions or concerns, do not hesitate to contact me.</p>
+            <h3 id="welcome-title">Welcome to Garden View Apartment! 👋</h3>
+            <p id="welcome-text">We look forward to having you at Garden View Apartment, Lienes iela 5, Cēsis. This page contains all the essential information you'll need during your stay. If you have any questions or concerns, do not hesitate to contact me.</p>
         </div>
 
-        <!-- Emergency Contact -->
-        <div class="emergency-banner">
-            🚨 Emergency: 112 | Host Contact: +371 29249385
-        </div>
+        <nav class="quick-nav" aria-label="Page section navigation">
+            <ul class="quick-nav-list">
+                <li><a href="#wifi" id="nav-wifi">WiFi</a></li>
+                <li><a href="#checkin" id="nav-checkin">Check-in</a></li>
+                <li><a href="#guide" id="nav-guide">Apartment</a></li>
+                <li><a href="#rules" id="nav-rules">Rules</a></li>
+                <li><a href="#recommendations" id="nav-recommendations">Local Tips</a></li>
+                <li><a href="#parking" id="nav-parking">Parking</a></li>
+                <li><a href="#contact" id="nav-contact">Contact</a></li>
+            </ul>
+        </nav>
 
         <!-- Main Content -->
         <div class="main-content">
                 <!-- WiFi Information -->
-                <section class="content-section">
-                    <h2>📶 WiFi Information</h2>
+                <section class="content-section" id="wifi">
+                    <h2 id="section-wifi">📶 WiFi Information</h2>
                     <div class="info-card">
-                        <h3>Network Name (SSID)</h3>
+                        <h3 id="wifi-network">Network Name (SSID)</h3>
                         <div class="wifi-code">AirBnB</div>
-                        <h3 style="margin-top: 20px;">Password</h3>
+                        <h3 style="margin-top: 20px;" id="wifi-password">Password</h3>
                         <div class="wifi-code">F87G35FH6AL</div>
                     </div>
                 </section>
 
                 <!-- Check-in/Check-out -->
-                <section class="content-section">
-                    <h2>🔑 Check-in & Smartlock</h2>
+                <section class="content-section" id="checkin">
+                    <h2 id="section-checkin">🔑 Check-in & Smartlock</h2>
                     <div class="info-card" style="margin-bottom: 20px;">
-                        <h3>Check-in Time</h3>
-                        <p><strong>From 16:00 till 23:00</strong></p>
+                        <h3 id="checkin-time">Check-in Time</h3>
+                        <p id="checkin-hours"><strong>From 16:00 till 23:00</strong></p>
+                    </div>
+                    <div class="info-card" style="margin-bottom: 20px;">
+                        <h3 id="checkout-time">Check-out Time</h3>
+                        <p id="checkout-hours"><strong>Until 12:00</strong></p>
                     </div>
                     <div class="info-card">
-                        <h3>🔐 Smartlock Instructions</h3>
-                        <p>The apartment is equipped with a smartlock so you can self-check-in and check-out. There is a keypad near the entrance where you will need to provide a PIN code to unlock the door.</p>
-                        <p style="margin-top: 15px; padding: 15px; background-color: #667eea; color: white; border-radius: 8px; font-weight: bold; text-align: center;">⚠️ Your PIN code will be sent separately on the day of arrival</p>
-                        <h4 style="margin-top: 20px; color: #667eea;">How to use the smartlock:</h4>
+                        <h3 id="smartlock-title">🔐 Smartlock Instructions</h3>
+                        <p id="smartlock-desc">The apartment is equipped with a smartlock so you can self-check-in and check-out. There is a keypad near the entrance where you will need to provide a PIN code to unlock the door.</p>
+                        <p style="margin-top: 15px; padding: 15px; background-color: #667eea; color: white; border-radius: 8px; font-weight: bold; text-align: center;" id="pin-warning">⚠️ Your PIN code will be sent separately on the day of arrival</p>
+                        <h4 style="margin-top: 20px; color: #667eea;" id="smartlock-how">How to use the smartlock:</h4>
                         <ul style="margin-top: 10px;">
-                            <li><strong>To unlock:</strong> Enter your PIN code on the keypad</li>
-                            <li><strong>To lock/unlock from inside:</strong> Rotate the knob on the smartlock</li>
-                            <li><strong>To lock when going out:</strong> Press the arrow button on the keypad and it will immediately lock</li>
+                            <li id="unlock-instr"><strong>To unlock:</strong> Enter your PIN code on the keypad</li>
+                            <li id="lock-inside-instr"><strong>To lock/unlock from inside:</strong> Rotate the knob on the smartlock</li>
+                            <li id="lock-out-instr"><strong>To lock when going out:</strong> Press the arrow button on the keypad and it will immediately lock</li>
                         </ul>
                     </div>
                 </section>
 
                 <!-- Apartment Guide -->
-                <section class="content-section">
-                    <h2>🏠 Apartment Guide</h2>
+                <section class="content-section" id="guide">
+                    <h2 id="section-guide">🏠 Apartment Guide</h2>
+                    
+                    <div class="info-card" style="margin-bottom: 20px; background-color: #f0f7ff;">
+                        <h3 id="about-apt">🏡 About Your Apartment (95 m²)</h3>
+                        <p id="about-apt-desc">You have the entire place to yourself! This spacious apartment features two bedrooms, a living room, and a private entrance. The apartment includes a garden and terrace with beautiful garden views, perfect for outdoor relaxation.</p>
+                    </div>
+
                     <div class="info-grid">
                         <div class="info-card">
-                            <h3>Kitchen Appliances</h3>
+                            <h3 id="kitchen-title">🍳 Fully Equipped Kitchen</h3>
                             <ul>
-                                <li>Coffee maker - pods in the cabinet</li>
-                                <li>Induction stove - touch controls</li>
-                                <li>Dishwasher - tablets under the sink</li>
-                                <li>Microwave - above the counter</li>
-                                <li>Refrigerator with freezer</li>
+                                <li id="kitchen-stove">Induction stove - touch controls</li>
+                                <li id="kitchen-dishwasher">Dishwasher - tablets in the lower cabinet</li>
+                                <li id="kitchen-fridge">Refrigerator with freezer</li>
+                                <li id="kitchen-utensils">All cooking utensils and dishes</li>
                             </ul>
-                            <h4 style="margin-top: 20px; color: #667eea;">☕ Coffee Machine Instructions:</h4>
-                            <img src="coffee-machine-instructions.jpg" alt="Coffee machine instructions" class="instruction-image">
+                            <h4 style="margin-top: 20px; color: #667eea;" id="coffee-title">☕ Coffee Machine Instructions:</h4>
+                            <div style="position: relative; display: inline-block; width: 100%;">
+                                <img src="coffee_machine_instructions.jpg" alt="Coffee machine instructions" class="instruction-image zoomable-image" onclick="openImageModal(this.src)">
+                                <span class="zoom-hint" id="zoom-hint">🔍 Click to zoom</span>
+                            </div>
                         </div>
                         <div class="info-card">
-                            <h3>Heating & Cooling</h3>
+                            <h3 id="bathroom-title">🛁 Private Bathroom</h3>
                             <ul>
-                                <li>Thermostat on the hallway wall</li>
-                                <li>Recommended setting: 21°C</li>
-                                <li>Floor heating in bathroom</li>
-                                <li>Ceiling fan in bedroom (summer)</li>
-                            </ul>
-                        </div>
-                        <div class="info-card">
-                            <h3>Entertainment</h3>
-                            <ul>
-                                <li>Smart TV with Netflix, HBO</li>
-                                <li>TV remote on the coffee table</li>
-                                <li>Board games in the closet</li>
-                                <li>Books available for reading</li>
+                                <li id="bathroom-tub">Bathtub with shower</li>
+                                <li id="bathroom-dryer">Hair dryer under the sink</li>
+                                <li id="bathroom-washer">Washing machine - detergent in cabinet</li>
+                                <li id="bathroom-towel">Heated towel dryer - please don't close the valve</li>
                             </ul>
                         </div>
                         <div class="info-card">
-                            <h3>Bathroom</h3>
+                            <h3 id="climate-title">❄️ Air Conditioning & Heating</h3>
                             <ul>
-                                <li>Towels in the bathroom cabinet</li>
-                                <li>Hair dryer under the sink</li>
-                                <li>Complimentary toiletries provided</li>
-                                <li>Washing machine - detergent included</li>
+                                <li id="climate-ac">Air conditioning unit in the living room</li>
+                                <li id="climate-floor">Floor heating in bathroom</li>
+                                <li id="climate-winter">During winter - radiator heating throughout</li>
+                            </ul>
+                        </div>
+                        <div class="info-card">
+                            <h3 id="entertainment-title">📺 Entertainment</h3>
+                            <ul>
+                                <li id="ent-tv">Smart TV</li>
+                                <li id="ent-remote">TV remote on the TV table</li>
+                                <li id="ent-wifi">Free WiFi throughout</li>
+                                <li id="ent-toys">Children toys in TV table cabinet</li>
+                            </ul>
+                        </div>
+                        <div class="info-card">
+                            <h3 id="bedroom-title">🛏️ Bedrooms & Living</h3>
+                            <ul>
+                                <li id="bed-rooms">Two spacious bedrooms</li>
+                                <li id="bed-living">Comfortable living room</li>
+                                <li id="bed-family">Family-friendly layout</li>
+                                <li id="bed-smoking">All rooms non-smoking</li>
+                                <li id="bed-entrance">Private entrance</li>
+                            </ul>
+                        </div>
+                        <div class="info-card">
+                            <h3 id="outdoor-title">🌳 Outdoor Spaces</h3>
+                            <ul>
+                                <li id="outdoor-garden">Private garden with views</li>
+                                <li id="outdoor-terrace">Terrace with outdoor furniture</li>
+                                <li id="outdoor-dining">Outdoor dining area</li>
+                                <li id="outdoor-meals">Perfect for alfresco meals</li>
+                                <li id="outdoor-parking">Free on-site parking</li>
                             </ul>
                         </div>
                     </div>
                 </section>
 
                 <!-- House Rules & Important Info -->
-                <section class="content-section">
-                    <h2>📋 House Rules & Important Information</h2>
+                <section class="content-section" id="rules">
+                    <h2 id="section-rules">📋 House Rules & Important Information</h2>
                     <div class="info-box">
                         <ul style="margin: 0; padding-left: 20px;">
-                            <li><strong>Smoking:</strong> Prohibited indoors. You can smoke outdoors by the entrance.</li>
-                            <li><strong>Trash:</strong> The bin is just around the corner of the garage. New trash bags are in the white drawer in the utility room.</li>
-                            <li><strong>Parents on property:</strong> My parents live in the other half of the house but they don't speak English. Please feel free to message me via app or call me for any questions.</li>
-                            <li>No parties or loud events</li>
-                            <li>Please be respectful of neighbors</li>
+                            <li id="rule-smoking"><strong>Smoking:</strong> Prohibited indoors. You can smoke outdoors by the entrance.</li>
+                            <li id="rule-trash"><strong>Trash:</strong> The bin is just around the corner of the garage. New trash bags are in the white drawer in the utility room.</li>
+                            <li id="rule-parents"><strong>Parents on property:</strong> My parents live in the other half of the house but they don't speak English. Please feel free to message me via app or call me for any questions.</li>
+                            <li id="rule-parties">No parties or loud events</li>
+                            <li id="rule-neighbors">Please be respectful of neighbors</li>
                         </ul>
                     </div>
                 </section>
 
                 <!-- Local Recommendations -->
-                <section class="content-section">
-                    <h2>🍽️ Local Recommendations</h2>
+                <section class="content-section" id="recommendations">
+                    <h2 id="section-recommendations">🍽️ Local Recommendations</h2>
                     <div class="info-grid">
                         <div class="info-card">
-                            <h3>Restaurants & Cafes</h3>
+                            <h3 id="rec-restaurants">Restaurants & Cafes</h3>
                             <ul>
-                                <li><strong>Villa Santa</strong> - Fine dining (10 min walk)</li>
-                                <li><strong>Kebabs</strong> - Quick meals (5 min walk)</li>
-                                <li><strong>Cafe Virāža</strong> - Coffee & pastries (8 min walk)</li>
-                                <li><strong>Fazenda</strong> - Local cuisine (12 min walk)</li>
+                                <li><strong>H.E. Vanadziņš</strong> - <span id="rec-rest1">Fine dining (26 min walk)</span></li>
+                                <li><strong>Studio Pizza</strong> - <span id="rec-rest2">Pizza, quick meals (25 min walk)</span></li>
+                                <li><strong>Vinetas un Allas Kārumlāde</strong> - <span id="rec-rest3">Coffee & pastries (26 min walk)</span></li>
+                                <li><strong>Vecpilsētas Kebabs</strong> - <span id="rec-rest4">Quick Meals (27 min walk)</span></li>
                             </ul>
                         </div>
                         <div class="info-card">
-                            <h3>Grocery Stores</h3>
+                            <h3 id="rec-grocery">Grocery Stores</h3>
                             <ul>
-                                <li><strong>Rimi</strong> - Supermarket (7 min walk)</li>
-                                <li><strong>Maxima</strong> - Large selection (10 min walk)</li>
-                                <li><strong>Local market</strong> - Fresh produce (Saturday mornings)</li>
+                                <li><strong>Top!</strong> - <span id="rec-groc1">Supermarket (5 min walk)</span></li>
+                                <li><strong>Solo</strong> - <span id="rec-groc2">Grocery store (6 min walk)</span></li>
+                                <li><strong>Maxima X</strong> - <span id="rec-groc3">Supermarket (21 min walk)</span></li>
+                                <li><strong>Cēsis market</strong> - <span id="rec-groc4">Fresh produce (Saturday mornings, 6 min drive)</span></li>
                             </ul>
                         </div>
                         <div class="info-card">
-                            <h3>Things to See</h3>
+                            <h3 id="rec-things">Things to See</h3>
                             <ul>
-                                <li><strong>Cēsis Castle</strong> - Medieval ruins (15 min walk)</li>
-                                <li><strong>Old Town</strong> - Historic center (10 min walk)</li>
-                                <li><strong>Gauja National Park</strong> - Hiking trails (20 min drive)</li>
-                                <li><strong>Līgatne Nature Trails</strong> - Wildlife park (30 min drive)</li>
+                                <li><strong>Cēsis Castle</strong> - <span id="rec-see1">Medieval ruins (28 min walk)</span></li>
+                                <li><strong>Old Town</strong> - <span id="rec-see2">Historic center (25 min walk)</span></li>
+                                <li><strong>Cēsis Space Centre</strong> - <span id="rec-see3">Interactive exhibition (13 min walk)</span></li>
+                                <li><strong>Gauja National Park</strong> - <span id="rec-see4">Hiking trails (20 min drive)</span></li>
+                                <li><strong>Līgatne Nature Trails</strong> - <span id="rec-see5">Wildlife park (30 min drive)</span></li>
+                                <li id="rec-more"><strong>More tourism information</strong> - <a href="https://visit.cesis.lv/en/" target="_blank" rel="noopener noreferrer">visit.cesis.lv/en</a></li>
                             </ul>
                         </div>
                         <div class="info-card">
-                            <h3>Transportation</h3>
+                            <h3 id="rec-transport">Transportation</h3>
                             <ul>
-                                <li><strong>Bus station</strong> - 10 minutes walk</li>
-                                <li><strong>Taxi</strong> - Call +371 6412 xxxx</li>
-                                <li><strong>Bolt app</strong> - Available in Cēsis</li>
-                                <li><strong>Free parking</strong> - In front of building</li>
+                                <li><strong id="rec-bus-label">Bus station</strong> - <span id="rec-bus">7 minutes walk</span></li>
+                                <li><strong id="rec-taxi-label">Taxi</strong> - <span id="rec-taxi">Call +371 28 301 110</span></li>
+                                <li><strong>Bolt app</strong> - <span id="rec-bolt">You can rent electric scooters</span></li>
+                                <li><strong id="rec-parking-label">Free parking</strong> - <span id="rec-parking-location">In front of building</span></li>
                             </ul>
                         </div>
                     </div>
                 </section>
 
                 <!-- Contact Information -->
-                <section class="content-section">
+                <section class="content-section" id="contact">
                     <div class="contact-card">
-                        <h3>📞 Contact Information</h3>
-                        <p><strong>Host:</strong> Available for any questions or concerns</p>
-                        <p><strong>Phone/WhatsApp:</strong> <a href="tel:+37129249385">+371 29249385</a></p>
-                        <p style="margin-top: 10px; font-size: 14px;">Feel free to message via app or call me anytime during your stay.</p>
-                        <p style="margin-top: 15px;"><strong>Emergency Services:</strong> 112</p>
-                        <p><strong>Local Police:</strong> 110</p>
-                        <p><strong>Medical Emergency:</strong> 113</p>
+                        <h3 id="contact-title">📞 Contact Information</h3>
+                        <p id="contact-host"><strong>Host:</strong> Available for any questions or concerns</p>
+                        <p><strong id="contact-phone">Phone/WhatsApp:</strong> <a href="tel:+37129249385">+371 29249385</a></p>
+                        <p style="margin-top: 10px; font-size: 14px;" id="contact-anytime">Feel free to message via app or call me anytime during your stay.</p>
+                        <p style="margin-top: 15px;" id="contact-emergency"><strong>Emergency Services:</strong> 112</p>
+                        <p id="contact-police"><strong>Local Police:</strong> 110</p>
+                        <p id="contact-medical"><strong>Medical Emergency:</strong> 113</p>
                     </div>
                 </section>
 
                 <!-- Parking -->
-                <section class="content-section">
-                    <h2>🅿️ Parking Information</h2>
+                <section class="content-section" id="parking">
+                    <h2 id="section-parking">🅿️ Parking Information</h2>
                     <div class="info-card">
-                        <h3>Important Parking Instructions</h3>
-                        <p>Please park your car within the designated zone <strong>without blocking the main gate</strong>.</p>
-                        <p style="margin-top: 10px;">The gate will stay open during your stay, so you can freely drive in and out.</p>
-                        <h4 style="margin-top: 20px; color: #667eea;">📍 Parking Area:</h4>
-                        <img src="parking-area.jpg" alt="Parking area with entrance marked" class="instruction-image">
-                        <p class="image-caption">Park in the designated area shown above. Do not block the main gate.</p>
+                        <h3 id="parking-title">Important Parking Instructions</h3>
+                        <p id="parking-zone">Please park your car within the designated zone <strong>without blocking the main gate</strong>.</p>
+                        <p style="margin-top: 10px;" id="parking-open">The gate will stay open during your stay, so you can freely drive in and out.</p>
+                        <h4 style="margin-top: 20px; color: #667eea;" id="parking-area">📍 Parking Area:</h4>
+                        <div class="parking-image-container">
+                            <img src="parking_instructions.jpg" alt="Parking area with entrance marked" class="instruction-image">
+                            <svg class="parking-overlay" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
+                                <!-- Parking zone polygon -->
+                                <polygon points="345,450 555,458 564,530 240,500" />
+                                <text x="420" y="480" id="svg-park">Park here</text>
+                                
+                                <!-- Entrance arrow (adjust coordinates as needed) -->
+                                <line x1="400" y1="340" x2="580" y2="340" stroke="white" stroke-width="4" />
+                                <polygon points="380,340 400,325 400,355" fill="white" stroke="white" stroke-width="2" />
+                                <text x="520" y="325" id="svg-entrance">Entrance</text>
+                            </svg>
+                        </div>
+                        <p class="image-caption" id="parking-caption">Park in the designated area shown above. Do not block the main gate.</p>
                     </div>
                 </section>
         </div>
 
         <footer>
-            <p>&copy; 2026 Garden View Apartment. We hope you enjoy your stay in Cēsis!</p>
-            <p>For any questions or assistance, contact us at +371 29249385</p>
+            <p id="footer-line-1">&copy; 2026 Garden View Apartment. We hope you enjoy your stay in Cēsis!</p>
+            <p id="footer-line-2">For any questions or assistance, contact us at +371 29249385</p>
         </footer>
     </div>
     </div> <!-- End of main-content -->
 
     <script>
         // Password protection
-        const PASSWORD = "GardenViewGuest"; // Change this to your desired password
+        const PASSWORD = "1234"; // Change this to your desired password
 
         // Check if already authenticated in this session
         if (sessionStorage.getItem('authenticated') === 'true') {
@@ -606,6 +823,443 @@
             document.getElementById('password-overlay').classList.add('hidden');
             document.getElementById('main-content').classList.add('visible');
         }
+
+        function setLanguage(lang) {
+            const isLatvian = lang === 'lat';
+            const translations = {
+                eng: {
+                    mainTitle: '🌿 Garden View Apartment',
+                    welcomeTitle: 'Welcome to Garden View Apartment! 👋',
+                    welcomeText: "We look forward to having you at Garden View Apartment, Lienes iela 5, Cēsis. This page contains all the essential information you'll need during your stay. If you have any questions or concerns, do not hesitate to contact me.",
+                    
+                    // Navigation
+                    navWifi: 'WiFi',
+                    navCheckin: 'Check-in',
+                    navGuide: 'Apartment',
+                    navRules: 'Rules',
+                    navRecommendations: 'Local Tips',
+                    navParking: 'Parking',
+                    navContact: 'Contact',
+                    
+                    // WiFi Section
+                    sectionWifi: '📶 WiFi Information',
+                    wifiNetwork: 'Network Name (SSID)',
+                    wifiPassword: 'Password',
+                    
+                    // Check-in Section
+                    sectionCheckin: '🔑 Check-in & Smartlock',
+                    checkinTime: 'Check-in Time',
+                    checkinHours: 'From 16:00 till 23:00',
+                    checkoutTime: 'Check-out Time',
+                    checkoutHours: 'Until 12:00',
+                    smartlockTitle: '🔐 Smartlock Instructions',
+                    smartlockDesc: 'The apartment is equipped with a smartlock so you can self-check-in and check-out. There is a keypad near the entrance where you will need to provide a PIN code to unlock the door.',
+                    pinWarning: '⚠️ Your PIN code will be sent separately on the day of arrival',
+                    smartlockHow: 'How to use the smartlock:',
+                    unlockInstr: 'To unlock: Enter your PIN code on the keypad',
+                    lockInsideInstr: 'To lock/unlock from inside: Rotate the knob on the smartlock',
+                    lockOutInstr: 'To lock when going out: Press the arrow button on the keypad and it will immediately lock',
+                    
+                    // Apartment Guide
+                    sectionGuide: '🏠 Apartment Guide',
+                    aboutApt: '🏡 About Your Apartment (95 m²)',
+                    aboutAptDesc: 'You have the entire place to yourself! This spacious apartment features two bedrooms, a living room, and a private entrance. The apartment includes a garden and terrace with beautiful garden views, perfect for outdoor relaxation.',
+                    kitchenTitle: '🍳 Fully Equipped Kitchen',
+                    kitchenStove: 'Induction stove - touch controls',
+                    kitchenDishwasher: 'Dishwasher - tablets in the lower cabinet',
+                    kitchenFridge: 'Refrigerator with freezer',
+                    kitchenUtensils: 'All cooking utensils and dishes',
+                    coffeeTitle: '☕ Coffee Machine Instructions:',
+                    zoomHint: '🔍 Click to zoom',
+                    bathroomTitle: '🛁 Private Bathroom',
+                    bathroomTub: 'Bathtub with shower',
+                    bathroomDryer: 'Hair dryer under the sink',
+                    bathroomWasher: 'Washing machine - detergent in cabinet',
+                    bathroomTowel: "Heated towel dryer - please don't close the valve",
+                    climateTitle: '❄️ Air Conditioning & Heating',
+                    climateAc: 'Air conditioning unit in the living room',
+                    climateFloor: 'Floor heating in bathroom',
+                    climateWinter: 'During winter - radiator heating throughout',
+                    entertainmentTitle: '📺 Entertainment',
+                    entTv: 'Smart TV',
+                    entRemote: 'TV remote on the TV table',
+                    entWifi: 'Free WiFi throughout',
+                    entToys: 'Children toys in TV table cabinet',
+                    bedroomTitle: '🛏️ Bedrooms & Living',
+                    bedRooms: 'Two spacious bedrooms',
+                    bedLiving: 'Comfortable living room',
+                    bedFamily: 'Family-friendly layout',
+                    bedSmoking: 'All rooms non-smoking',
+                    bedEntrance: 'Private entrance',
+                    outdoorTitle: '🌳 Outdoor Spaces',
+                    outdoorGarden: 'Private garden with views',
+                    outdoorTerrace: 'Terrace with outdoor furniture',
+                    outdoorDining: 'Outdoor dining area',
+                    outdoorMeals: 'Perfect for alfresco meals',
+                    outdoorParking: 'Free on-site parking',
+                    
+                    // House Rules
+                    sectionRules: '📋 House Rules & Important Information',
+                    ruleSmoking: 'Smoking: Prohibited indoors. You can smoke outdoors by the entrance.',
+                    ruleTrash: 'Trash: The bin is just around the corner of the garage. New trash bags are in the white drawer in the utility room.',
+                    ruleParents: "Parents on property: My parents live in the other half of the house but they don't speak English. Please feel free to message me via app or call me for any questions.",
+                    ruleParties: 'No parties or loud events',
+                    ruleNeighbors: 'Please be respectful of neighbors',
+                    
+                    // Local Recommendations
+                    sectionRecommendations: '🍽️ Local Recommendations',
+                    recRestaurants: 'Restaurants & Cafes',
+                    recRest1: 'Fine dining (26 min walk)',
+                    recRest2: 'Pizza, quick meals (25 min walk)',
+                    recRest3: 'Coffee & pastries (26 min walk)',
+                    recRest4: 'Quick Meals (27 min walk)',
+                    recGrocery: 'Grocery Stores',
+                    recGroc1: 'Supermarket (5 min walk)',
+                    recGroc2: 'Grocery store (6 min walk)',
+                    recGroc3: 'Supermarket (21 min walk)',
+                    recGroc4: 'Fresh produce (Saturday mornings, 6 min drive)',
+                    recThings: 'Things to See',
+                    recSee1: 'Medieval ruins (28 min walk)',
+                    recSee2: 'Historic center (25 min walk)',
+                    recSee3: 'Interactive exhibition (13 min walk)',
+                    recSee4: 'Hiking trails (20 min drive)',
+                    recSee5: 'Wildlife park (30 min drive)',
+                    recMore: 'More tourism information',
+                    recTransport: 'Transportation',
+                    recBusLabel: 'Bus station',
+                    recBus: '7 minutes walk',
+                    recTaxiLabel: 'Taxi',
+                    recTaxi: 'Call +371 28 301 110',
+                    recBolt: 'You can rent electric scooters',
+                    recParkingLabel: 'Free parking',
+                    recParkingLocation: 'In front of building',
+                    
+                    // Contact
+                    contactTitle: '📞 Contact Information',
+                    contactHost: 'Host: Available for any questions or concerns',
+                    contactPhone: 'Phone/WhatsApp:',
+                    contactAnytime: 'Feel free to message via app or call me anytime during your stay.',
+                    contactEmergency: 'Emergency Services: 112',
+                    contactPolice: 'Local Police: 110',
+                    contactMedical: 'Medical Emergency: 113',
+                    
+                    // Parking
+                    sectionParking: '🅿️ Parking Information',
+                    parkingTitle: 'Important Parking Instructions',
+                    parkingZone: 'Please park your car within the designated zone without blocking the main gate.',
+                    parkingOpen: 'The gate will stay open during your stay, so you can freely drive in and out.',
+                    parkingArea: '📍 Parking Area:',
+                    svgPark: 'Park here',
+                    svgEntrance: 'Entrance',
+                    parkingCaption: 'Park in the designated area shown above. Do not block the main gate.',
+                    
+                    // Footer
+                    footerLine1: '© 2026 Garden View Apartment. We hope you enjoy your stay in Cēsis!',
+                    footerLine2: 'For any questions or assistance, contact us at +371 29249385'
+                },
+                lat: {
+                    mainTitle: '🌿 Garden View Apartment',
+                    welcomeTitle: 'Laipni lūdzam Garden View Apartment! 👋',
+                    welcomeText: 'Priecājamies jūs uzņemt Garden View Apartment, Lienes ielā 5, Cēsīs. Šajā lapā atradīsiet svarīgāko informāciju jūsu uzturēšanās laikam. Ja rodas jautājumi vai neskaidrības, lūdzu, sazinieties ar mani.',
+                    
+                    // Navigation
+                    navWifi: 'WiFi',
+                    navCheckin: 'Iebraukšana',
+                    navGuide: 'Dzīvoklis',
+                    navRules: 'Noteikumi',
+                    navRecommendations: 'Ieteikumi',
+                    navParking: 'Autostāvvieta',
+                    navContact: 'Kontakti',
+                    
+                    // WiFi Section
+                    sectionWifi: '📶 WiFi informācija',
+                    wifiNetwork: 'Tīkla nosaukums (SSID)',
+                    wifiPassword: 'Parole',
+                    
+                    // Check-in Section
+                    sectionCheckin: '🔑 Iebraukšana un Viedslēdzene',
+                    checkinTime: 'Iebraukšanas laiks',
+                    checkinHours: 'No 16:00 līdz 23:00',
+                    checkoutTime: 'Izbraukšanas laiks',
+                    checkoutHours: 'Līdz 12:00',
+                    smartlockTitle: '🔐 Viedslēdzenes instrukcijas',
+                    smartlockDesc: 'Dzīvoklis ir aprīkots ar viedslēdzeni, lai jūs varētu patstāvīgi iebraukt un izbraukt. Pie ieejas ir tastatūra, kur jums būs jāievada PIN kods, lai atslēgtu durvis.',
+                    pinWarning: '⚠️ Jūsu PIN kods tiks nosūtīts atsevišķi ierašanās dienā',
+                    smartlockHow: 'Kā lietot viedslēdzeni:',
+                    unlockInstr: 'Lai atslēgtu: Ievadiet savu PIN kodu tastatūrā',
+                    lockInsideInstr: 'Lai slēgtu/atslēgtu no iekšpuses: Pagrieziet pogu uz viedslēdzenes',
+                    lockOutInstr: 'Lai slēgtu ejot ārā: Nospiediet bultiņas pogu uz tastatūras un tā uzreiz aizslēgsies',
+                    
+                    // Apartment Guide
+                    sectionGuide: '🏠 Dzīvokļa ceļvedis',
+                    aboutApt: '🏡 Par Jūsu dzīvokli (95 m²)',
+                    aboutAptDesc: 'Visa vieta ir jūsu rīcībā! Šis plašais dzīvoklis ir ar divām guļamistabām, dzīvojamo istabu un privātu ieeju. Dzīvoklim ir dārzs un terase ar skaistu skatu uz dārzu, ideāli piemērots atpūtai svaigā gaisā.',
+                    kitchenTitle: '🍳 Pilnībā aprīkota virtuve',
+                    kitchenStove: 'Indukcijas plīts - skārienkontroles',
+                    kitchenDishwasher: 'Trauku mazgājamā mašīna - tabletes apakšējā skapītī',
+                    kitchenFridge: 'Ledusskapis ar saldētavu',
+                    kitchenUtensils: 'Visi gatavošanai nepieciešamie piederumi un trauki',
+                    coffeeTitle: '☕ Kafijas automāta instrukcijas:',
+                    zoomHint: '🔍 Klikšķiniet, lai palielinātu',
+                    bathroomTitle: '🛁 Privātā vannas istaba',
+                    bathroomTub: 'Vanna ar dušu',
+                    bathroomDryer: 'Fēns zem izlietnes',
+                    bathroomWasher: 'Veļas mazgājamā mašīna - mazgāšanas līdzeklis skapītī',
+                    bathroomTowel: 'Apkurināms dvieļu žāvētājs - lūdzu, neaizveriet vārstu',
+                    climateTitle: '❄️ Gaisa kondicionēšana un apkure',
+                    climateAc: 'Gaisa kondicionieris dzīvojamajā istabā',
+                    climateFloor: 'Grīdas apkure vannas istabā',
+                    climateWinter: 'Ziemā - radiatori apkure visā dzīvoklī',
+                    entertainmentTitle: '📺 Izklaide',
+                    entTv: 'Viedtelevīzors',
+                    entRemote: 'TV pults uz TV galda',
+                    entWifi: 'Bezmaksas WiFi visā dzīvoklī',
+                    entToys: 'Bērnu rotaļlietas TV galda skapītī',
+                    bedroomTitle: '🛏️ Guļamistabas un dzīvojamā',
+                    bedRooms: 'Divas plašas guļamistabas',
+                    bedLiving: 'Ērta dzīvojamā istaba',
+                    bedFamily: 'Ģimenei draudzīgs izkārtojums',
+                    bedSmoking: 'Visas istabas bez smēķēšanas',
+                    bedEntrance: 'Privāta ieeja',
+                    outdoorTitle: '🌳 Āra telpas',
+                    outdoorGarden: 'Privāts dārzs ar skatu',
+                    outdoorTerrace: 'Terase ar āra mēbelēm',
+                    outdoorDining: 'Āra ēdamzona',
+                    outdoorMeals: 'Ideāli piemērots maltītēm svaigā gaisā',
+                    outdoorParking: 'Bezmaksas autostāvvieta',
+                    
+                    // House Rules
+                    sectionRules: '📋 Mājas noteikumi un svarīga informācija',
+                    ruleSmoking: 'Smēķēšana: Aizliegta telpās. Jūs varat smēķēt ārpus telpām pie ieejas.',
+                    ruleTrash: 'Atkritumi: Atkritumu tvertne ir aiz garāžas stūra. Jauni atkritumu maisi ir baltajā atvilktnē saimniecības telpā.',
+                    ruleParents: 'Vecāki īpašumā: Mani vecāki dzīvo otrā mājas pusē, bet viņi nerunā angliski. Lūdzu, jautājumu gadījumā droši sazinieties ar mani caur lietotni vai zvaniet.',
+                    ruleParties: 'Bez ballītēm vai skaļiem notikumiem',
+                    ruleNeighbors: 'Lūdzu, esiet pieklājīgi pret kaimiņiem',
+                    
+                    // Local Recommendations
+                    sectionRecommendations: '🍽️ Vietējie ieteikumi',
+                    recRestaurants: 'Restorāni un kafejnīcas',
+                    recRest1: 'Augstākās klases ēdināšana (26 min iešus)',
+                    recRest2: 'Pica, ātras maltītes (25 min iešus)',
+                    recRest3: 'Kafija un kūciņas (26 min iešus)',
+                    recRest4: 'Ātras maltītes (27 min iešus)',
+                    recGrocery: 'Pārtikas veikali',
+                    recGroc1: 'Lielveikals (5 min iešus)',
+                    recGroc2: 'Pārtikas veikals (6 min iešus)',
+                    recGroc3: 'Lielveikals (21 min iešus)',
+                    recGroc4: 'Svaigi produkti (sestdienās no rīta, 6 min brauciens)',
+                    recThings: 'Ko apskatīt',
+                    recSee1: 'Viduslaiku drupas (28 min iešus)',
+                    recSee2: 'Vēsturiskais centrs (25 min iešus)',
+                    recSee3: 'Interaktīva izstāde (13 min iešus)',
+                    recSee4: 'Pārgājienu takas (20 min brauciens)',
+                    recSee5: 'Dabas parks (30 min brauciens)',
+                    recMore: 'Vairāk tūrisma informācijas',
+                    recTransport: 'Transports',
+                    recBusLabel: 'Autoosta',
+                    recBus: '7 minūšu iešus',
+                    recTaxiLabel: 'Taksometrs',
+                    recTaxi: 'Zvaniet +371 28 301 110',
+                    recBolt: 'Jūs varat īrēt elektriskos skrejriteņus',
+                    recParkingLabel: 'Bezmaksas autostāvvieta',
+                    recParkingLocation: 'Ēkas priekšā',
+                    
+                    // Contact
+                    contactTitle: '📞 Kontaktinformācija',
+                    contactHost: 'Saimnieks: Pieejams visiem jautājumiem vai bažām',
+                    contactPhone: 'Tālrunis/WhatsApp:',
+                    contactAnytime: 'Droši rakstiet caur lietotni vai zvaniet man jebkurā laikā jūsu uzturēšanās laikā.',
+                    contactEmergency: 'Ārkārtas dienesti: 112',
+                    contactPolice: 'Vietējā policija: 110',
+                    contactMedical: 'Neatliekamā medicīniskā palīdzība: 113',
+                    
+                    // Parking
+                    sectionParking: '🅿️ Autostāvvietas informācija',
+                    parkingTitle: 'Svarīgas autostāvvietas instrukcijas',
+                    parkingZone: 'Lūdzu, novietojiet savu automašīnu norādītajā zonā, nebloķējot galvenos vārtus.',
+                    parkingOpen: 'Vārti paliks atvērti jūsu uzturēšanās laikā, lai jūs varētu brīvi iebraukt un izbraukt.',
+                    parkingArea: '📍 Autostāvvietas zona:',
+                    svgPark: 'Auto novietojiet šeit',
+                    svgEntrance: 'Ieeja',
+                    parkingCaption: 'Novietojiet automašīnu norādītajā zonā, kas parādīta attēlā. Nebloķējiet galvenos vārtus.',
+                    
+                    // Footer
+                    footerLine1: '© 2026 Garden View Apartment. Ceram, ka izbaudīsiet uzturēšanos Cēsīs!',
+                    footerLine2: 'Jautājumu vai palīdzības gadījumā sazinieties ar mums: +371 29249385'
+                }
+            };
+
+            const text = translations[lang] || translations.eng;
+            document.documentElement.lang = isLatvian ? 'lv' : 'en';
+
+            // Helper function to safely set text content
+            const setText = (id, value) => {
+                const element = document.getElementById(id);
+                if (element) element.textContent = value;
+            };
+            
+            const setHTML = (id, value) => {
+                const element = document.getElementById(id);
+                if (element) element.innerHTML = value;
+            };
+
+            // Update all translations
+            setText('main-title', text.mainTitle);
+            setText('welcome-title', text.welcomeTitle);
+            setText('welcome-text', text.welcomeText);
+            
+            // Navigation
+            setText('nav-wifi', text.navWifi);
+            setText('nav-checkin', text.navCheckin);
+            setText('nav-guide', text.navGuide);
+            setText('nav-rules', text.navRules);
+            setText('nav-recommendations', text.navRecommendations);
+            setText('nav-parking', text.navParking);
+            setText('nav-contact', text.navContact);
+            
+            // WiFi
+            setText('section-wifi', text.sectionWifi);
+            setText('wifi-network', text.wifiNetwork);
+            setText('wifi-password', text.wifiPassword);
+            
+            // Check-in
+            setText('section-checkin', text.sectionCheckin);
+            setText('checkin-time', text.checkinTime);
+            setHTML('checkin-hours', '<strong>' + text.checkinHours + '</strong>');
+            setText('checkout-time', text.checkoutTime);
+            setHTML('checkout-hours', '<strong>' + text.checkoutHours + '</strong>');
+            setText('smartlock-title', text.smartlockTitle);
+            setText('smartlock-desc', text.smartlockDesc);
+            setText('pin-warning', text.pinWarning);
+            setText('smartlock-how', text.smartlockHow);
+            setHTML('unlock-instr', '<strong>' + text.unlockInstr.split(':')[0] + ':</strong> ' + text.unlockInstr.split(':').slice(1).join(':'));
+            setHTML('lock-inside-instr', '<strong>' + text.lockInsideInstr.split(':')[0] + ':</strong> ' + text.lockInsideInstr.split(':').slice(1).join(':'));
+            setHTML('lock-out-instr', '<strong>' + text.lockOutInstr.split(':')[0] + ':</strong> ' + text.lockOutInstr.split(':').slice(1).join(':'));
+            
+            // Apartment Guide
+            setText('section-guide', text.sectionGuide);
+            setText('about-apt', text.aboutApt);
+            setText('about-apt-desc', text.aboutAptDesc);
+            setText('kitchen-title', text.kitchenTitle);
+            setText('kitchen-stove', text.kitchenStove);
+            setText('kitchen-dishwasher', text.kitchenDishwasher);
+            setText('kitchen-fridge', text.kitchenFridge);
+            setText('kitchen-utensils', text.kitchenUtensils);
+            setText('coffee-title', text.coffeeTitle);
+            setText('zoom-hint', text.zoomHint);
+            setText('bathroom-title', text.bathroomTitle);
+            setText('bathroom-tub', text.bathroomTub);
+            setText('bathroom-dryer', text.bathroomDryer);
+            setText('bathroom-washer', text.bathroomWasher);
+            setText('bathroom-towel', text.bathroomTowel);
+            setText('climate-title', text.climateTitle);
+            setText('climate-ac', text.climateAc);
+            setText('climate-floor', text.climateFloor);
+            setText('climate-winter', text.climateWinter);
+            setText('entertainment-title', text.entertainmentTitle);
+            setText('ent-tv', text.entTv);
+            setText('ent-remote', text.entRemote);
+            setText('ent-wifi', text.entWifi);
+            setText('ent-toys', text.entToys);
+            setText('bedroom-title', text.bedroomTitle);
+            setText('bed-rooms', text.bedRooms);
+            setText('bed-living', text.bedLiving);
+            setText('bed-family', text.bedFamily);
+            setText('bed-smoking', text.bedSmoking);
+            setText('bed-entrance', text.bedEntrance);
+            setText('outdoor-title', text.outdoorTitle);
+            setText('outdoor-garden', text.outdoorGarden);
+            setText('outdoor-terrace', text.outdoorTerrace);
+            setText('outdoor-dining', text.outdoorDining);
+            setText('outdoor-meals', text.outdoorMeals);
+            setText('outdoor-parking', text.outdoorParking);
+            
+            // House Rules
+            setText('section-rules', text.sectionRules);
+            setHTML('rule-smoking', '<strong>' + text.ruleSmoking.split(':')[0] + ':</strong> ' + text.ruleSmoking.split(':').slice(1).join(':'));
+            setHTML('rule-trash', '<strong>' + text.ruleTrash.split(':')[0] + ':</strong> ' + text.ruleTrash.split(':').slice(1).join(':'));
+            setHTML('rule-parents', '<strong>' + text.ruleParents.split(':')[0] + ':</strong> ' + text.ruleParents.split(':').slice(1).join(':'));
+            setText('rule-parties', text.ruleParties);
+            setText('rule-neighbors', text.ruleNeighbors);
+            
+            // Recommendations
+            setText('section-recommendations', text.sectionRecommendations);
+            setText('rec-restaurants', text.recRestaurants);
+            setText('rec-rest1', text.recRest1);
+            setText('rec-rest2', text.recRest2);
+            setText('rec-rest3', text.recRest3);
+            setText('rec-rest4', text.recRest4);
+            setText('rec-grocery', text.recGrocery);
+            setText('rec-groc1', text.recGroc1);
+            setText('rec-groc2', text.recGroc2);
+            setText('rec-groc3', text.recGroc3);
+            setText('rec-groc4', text.recGroc4);
+            setText('rec-things', text.recThings);
+            setText('rec-see1', text.recSee1);
+            setText('rec-see2', text.recSee2);
+            setText('rec-see3', text.recSee3);
+            setText('rec-see4', text.recSee4);
+            setText('rec-see5', text.recSee5);
+            setHTML('rec-more', '<strong>' + text.recMore + '</strong> - <a href="https://visit.cesis.lv/en/" target="_blank" rel="noopener noreferrer">visit.cesis.lv/en</a>');
+            setText('rec-transport', text.recTransport);
+            setText('rec-bus-label', text.recBusLabel);
+            setText('rec-bus', text.recBus);
+            setText('rec-taxi-label', text.recTaxiLabel);
+            setText('rec-taxi', text.recTaxi);
+            setText('rec-bolt', text.recBolt);
+            setText('rec-parking-label', text.recParkingLabel);
+            setText('rec-parking-location', text.recParkingLocation);
+            
+            // Contact
+            setText('contact-title', text.contactTitle);
+            setHTML('contact-host', '<strong>' + text.contactHost.split(':')[0] + ':</strong> ' + text.contactHost.split(':').slice(1).join(':'));
+            setText('contact-phone', text.contactPhone);
+            setText('contact-anytime', text.contactAnytime);
+            setHTML('contact-emergency', '<strong>' + text.contactEmergency.split(':')[0] + ':</strong> ' + text.contactEmergency.split(':')[1]);
+            setHTML('contact-police', '<strong>' + text.contactPolice.split(':')[0] + ':</strong> ' + text.contactPolice.split(':')[1]);
+            setHTML('contact-medical', '<strong>' + text.contactMedical.split(':')[0] + ':</strong> ' + text.contactMedical.split(':')[1]);
+            
+            // Parking
+            setText('section-parking', text.sectionParking);
+            setText('parking-title', text.parkingTitle);
+            setHTML('parking-zone', text.parkingZone.replace('without blocking the main gate', '<strong>without blocking the main gate</strong>').replace('nebloķējot galvenos vārtus', '<strong>nebloķējot galvenos vārtus</strong>'));
+            setText('parking-open', text.parkingOpen);
+            setText('parking-area', text.parkingArea);
+            setText('svg-park', text.svgPark);
+            setText('svg-entrance', text.svgEntrance);
+            setText('parking-caption', text.parkingCaption);
+            
+            // Footer
+            setText('footer-line-1', text.footerLine1);
+            setText('footer-line-2', text.footerLine2);
+
+            document.getElementById('lang-eng').classList.toggle('active', !isLatvian);
+            document.getElementById('lang-lat').classList.toggle('active', isLatvian);
+
+            localStorage.setItem('guestInfoLanguage', lang);
+        }
+
+        const savedLanguage = localStorage.getItem('guestInfoLanguage') || 'eng';
+        setLanguage(savedLanguage);
+
+        // Image zoom functionality
+        function openImageModal(imageSrc) {
+            document.getElementById('image-modal').classList.add('active');
+            document.getElementById('modal-image').src = imageSrc;
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeImageModal() {
+            document.getElementById('image-modal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeImageModal();
+            }
+        });
     </script>
 
     <style>
