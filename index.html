@@ -784,8 +784,33 @@
     </div> <!-- End of main-content -->
 
     <script>
-        // Password protection
-        const PASSWORD = "1234"; // Change this to your desired password
+        // Password protection with SHA-256 hashing
+        // TO SET UP: 
+        // 1. Open browser console (F12)
+        // 2. Run: await hashPassword("Cesis2026")
+        // 3. Copy the output hash and paste it into PASSWORD_HASH below
+        // 4. Delete this comment and the password reference
+        
+        // For now, using a temporary solution that hashes on-the-fly
+        const TEMP_PASSWORD = "Cesis2026"; // Remove this after setting up the hash
+        let PASSWORD_HASH = null;
+
+        // Hash function using SHA-256
+        async function hashPassword(password) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashHex;
+        }
+
+        // Initialize password hash
+        (async () => {
+            PASSWORD_HASH = await hashPassword(TEMP_PASSWORD);
+            console.log('Password hash for "' + TEMP_PASSWORD + '":', PASSWORD_HASH);
+            console.log('Copy the hash above and replace PASSWORD_HASH constant with it for better security.');
+        })();
 
         // Check if already authenticated in this session
         if (sessionStorage.getItem('authenticated') === 'true') {
@@ -799,11 +824,20 @@
             }
         });
 
-        function checkPassword() {
+        async function checkPassword() {
             const input = document.getElementById('password-input').value;
             const errorDiv = document.getElementById('password-error');
             
-            if (input === PASSWORD) {
+            // Wait for hash to be initialized
+            if (!PASSWORD_HASH) {
+                PASSWORD_HASH = await hashPassword(TEMP_PASSWORD);
+            }
+            
+            // Hash the input password
+            const inputHash = await hashPassword(input);
+            
+            // Compare with stored hash
+            if (inputHash === PASSWORD_HASH) {
                 sessionStorage.setItem('authenticated', 'true');
                 showContent();
             } else {
