@@ -569,26 +569,40 @@
 
         <nav class="quick-nav" aria-label="Page section navigation">
             <ul class="quick-nav-list">
-                <li><a href="#wifi" id="nav-wifi">WiFi</a></li>
+                <li><a href="#parking" id="nav-parking">Parking</a></li>
                 <li><a href="#checkin" id="nav-checkin">Check-in</a></li>
                 <li><a href="#guide" id="nav-guide">Apartment</a></li>
                 <li><a href="#rules" id="nav-rules">Rules</a></li>
+                <li><a href="#wifi" id="nav-wifi">WiFi</a></li>
                 <li><a href="#recommendations" id="nav-recommendations">Local Tips</a></li>
-                <li><a href="#parking" id="nav-parking">Parking</a></li>
                 <li><a href="#contact" id="nav-contact">Contact</a></li>
             </ul>
         </nav>
 
         <!-- Main Content -->
         <div class="main-content">
-                <!-- WiFi Information -->
-                <section class="content-section" id="wifi">
-                    <h2 id="section-wifi">📶 WiFi Information</h2>
+                <!-- Parking -->
+                <section class="content-section" id="parking">
+                    <h2 id="section-parking">🅿️ Parking Information</h2>
                     <div class="info-card">
-                        <h3 id="wifi-network">Network Name (SSID)</h3>
-                        <div class="wifi-code">AirBnB</div>
-                        <h3 style="margin-top: 20px;" id="wifi-password">Password</h3>
-                        <div class="wifi-code">F87G35FH6AL</div>
+                        <h3 id="parking-title">Important Parking Instructions</h3>
+                        <p id="parking-zone">Please park your car within the designated zone <strong>without blocking the main gate</strong>.</p>
+                        <p style="margin-top: 10px;" id="parking-open">The gate will stay open during your stay, so you can freely drive in and out.</p>
+                        <h4 style="margin-top: 20px; color: #667eea;" id="parking-area">📍 Parking Area:</h4>
+                        <div class="parking-image-container">
+                            <img src="parking_instructions.jpg" alt="Parking area with entrance marked" class="instruction-image">
+                            <svg class="parking-overlay" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
+                                <!-- Parking zone polygon -->
+                                <polygon points="345,450 555,458 564,530 240,500" />
+                                <text x="420" y="480" id="svg-park">Park here</text>
+                                
+                                <!-- Entrance arrow (adjust coordinates as needed) -->
+                                <line x1="400" y1="340" x2="580" y2="340" stroke="white" stroke-width="4" />
+                                <polygon points="380,340 400,325 400,355" fill="white" stroke="white" stroke-width="2" />
+                                <text x="520" y="325" id="svg-entrance">Entrance</text>
+                            </svg>
+                        </div>
+                        <p class="image-caption" id="parking-caption">Park in the designated area shown above. Do not block the main gate.</p>
                     </div>
                 </section>
 
@@ -677,13 +691,11 @@
                             </ul>
                         </div>
                         <div class="info-card">
-                            <h3 id="outdoor-title">🌳 Outdoor Spaces</h3>
+                            <h3 id="outdoor-title">🌳 Outdoor Spaces </h3>
                             <ul>
                                 <li id="outdoor-garden">Private garden with views</li>
                                 <li id="outdoor-terrace">Terrace with outdoor furniture</li>
-                                <li id="outdoor-dining">Outdoor dining area</li>
-                                <li id="outdoor-meals">Perfect for alfresco meals</li>
-                                <li id="outdoor-parking">Free on-site parking</li>
+
                             </ul>
                         </div>
                     </div>
@@ -700,6 +712,17 @@
                             <li id="rule-parties">No parties or loud events</li>
                             <li id="rule-neighbors">Please be respectful of neighbors</li>
                         </ul>
+                    </div>
+                </section>
+
+                <!-- WiFi Information -->
+                <section class="content-section" id="wifi">
+                    <h2 id="section-wifi">📶 WiFi Information</h2>
+                    <div class="info-card">
+                        <h3 id="wifi-network">Network Name (SSID)</h3>
+                        <div class="wifi-code">AirBnB</div>
+                        <h3 style="margin-top: 20px;" id="wifi-password">Password</h3>
+                        <div class="wifi-code">F87G35FH6AL</div>
                     </div>
                 </section>
 
@@ -758,31 +781,6 @@
                         <p style="margin-top: 15px;" id="contact-emergency"><strong>Emergency Services:</strong> 112</p>
                         <p id="contact-police"><strong>Local Police:</strong> 110</p>
                         <p id="contact-medical"><strong>Medical Emergency:</strong> 113</p>
-                    </div>
-                </section>
-
-                <!-- Parking -->
-                <section class="content-section" id="parking">
-                    <h2 id="section-parking">🅿️ Parking Information</h2>
-                    <div class="info-card">
-                        <h3 id="parking-title">Important Parking Instructions</h3>
-                        <p id="parking-zone">Please park your car within the designated zone <strong>without blocking the main gate</strong>.</p>
-                        <p style="margin-top: 10px;" id="parking-open">The gate will stay open during your stay, so you can freely drive in and out.</p>
-                        <h4 style="margin-top: 20px; color: #667eea;" id="parking-area">📍 Parking Area:</h4>
-                        <div class="parking-image-container">
-                            <img src="parking_instructions.jpg" alt="Parking area with entrance marked" class="instruction-image">
-                            <svg class="parking-overlay" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
-                                <!-- Parking zone polygon -->
-                                <polygon points="345,450 555,458 564,530 240,500" />
-                                <text x="420" y="480" id="svg-park">Park here</text>
-                                
-                                <!-- Entrance arrow (adjust coordinates as needed) -->
-                                <line x1="400" y1="340" x2="580" y2="340" stroke="white" stroke-width="4" />
-                                <polygon points="380,340 400,325 400,355" fill="white" stroke="white" stroke-width="2" />
-                                <text x="520" y="325" id="svg-entrance">Entrance</text>
-                            </svg>
-                        </div>
-                        <p class="image-caption" id="parking-caption">Park in the designated area shown above. Do not block the main gate.</p>
                     </div>
                 </section>
         </div>
