@@ -571,7 +571,6 @@
             <ul class="quick-nav-list">
                 <li><a href="#parking" id="nav-parking">Parking</a></li>
                 <li><a href="#checkin" id="nav-checkin">Check-in</a></li>
-                <li><a href="#guide" id="nav-guide">Apartment</a></li>
                 <li><a href="#rules" id="nav-rules">Rules</a></li>
                 <li><a href="#wifi" id="nav-wifi">WiFi</a></li>
                 <li><a href="#recommendations" id="nav-recommendations">Local Tips</a></li>
@@ -697,6 +696,24 @@
                                 <li id="outdoor-terrace">Terrace with outdoor furniture</li>
 
                             </ul>
+                        </div>
+                    </div>
+
+                    <!-- Child Lock Magnets -->
+                    <div class="info-card" style="margin-top: 30px; background-color: #fff4e6; border-left: 4px solid #ff9800;">
+                        <h3 id="childlock-title" style="color: #ff9800;">🔒 Child Lock Magnets for Cabinets</h3>
+                        <p id="childlock-desc">Some cabinets in the apartment have a magnetic child safety lock system installed. The system is <strong>disabled by default</strong>, but you can easily enable it using the toggle switch inside the cabinet.</p>
+                        <p id="childlock-marked"><strong id="childlock-marked-label">How to identify protected cabinets:</strong> Cabinets with this system are marked with a <strong>lock symbol sticker</strong>. The sticker also shows where to place the magnetic key to open the cabinet when the lock is enabled.</p>
+                        <p id="childlock-magnets"><strong id="childlock-magnets-label">Opening magnets:</strong> There are <strong>two magnetic keys</strong> available for your use (see image below).</p>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 300px)); gap: 15px; margin-top: 15px; justify-content: center;">
+                            <div style="position: relative; display: inline-block; width: 100%;">
+                                <img src="child-lock1.jpg" alt="Child lock magnetic key" class="instruction-image zoomable-image" onclick="openImageModal(this.src)" style="max-width: 300px; width: 100%;">
+                                <span class="zoom-hint" id="zoom-hint-childlock1">🔍 Click to zoom</span>
+                            </div>
+                            <div style="position: relative; display: inline-block; width: 100%;">
+                                <img src="child-lock2.jpg" alt="Child lock toggle switch inside cabinet" class="instruction-image zoomable-image" onclick="openImageModal(this.src)" style="max-width: 300px; width: 100%;">
+                                <span class="zoom-hint" id="zoom-hint-childlock2">🔍 Click to zoom</span>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -941,6 +958,14 @@
                     outdoorMeals: 'Perfect for alfresco meals',
                     outdoorParking: 'Free on-site parking',
                     
+                    // Child Lock Magnets
+                    childlockTitle: '🔒 Child Lock Magnets for Cabinets',
+                    childlockDesc: 'Some cabinets in the apartment have a magnetic child safety lock system installed. The system is disabled by default, but you can easily enable it using the toggle switch inside the cabinet.',
+                    childlockMarked: 'Cabinets and the magnets are marked with a lock symbol sticker. The sticker on the cabinet also shows where to place the magnetic key to open the cabinet when the lock is enabled.',
+                    childlockMarkedLabel: 'How to identify protected cabinets:',
+                    childlockMagnets: 'There are two magnetic keys available for your use.',
+                    childlockMagnetsLabel: 'Opening magnets:',
+                    
                     // House Rules
                     sectionRules: '📋 House Rules & Important Information',
                     ruleSmoking: 'Smoking: Prohibited indoors. You can smoke outdoors by the entrance.',
@@ -1070,6 +1095,14 @@
                     outdoorDining: 'Āra ēdamzona',
                     outdoorMeals: 'Ideāli piemērots maltītēm svaigā gaisā',
                     outdoorParking: 'Bezmaksas autostāvvieta',
+                    
+                    // Child Lock Magnets
+                    childlockTitle: '🔒 Bērnu drošības magnēti skapīšiem',
+                    childlockDesc: 'Dažiem skapīšiem dzīvoklī ir uzstādīta magnētiskā bērnu drošības slēdzeņu sistēma. Sistēma pēc noklusējuma ir izslēgta, bet jūs varat to viegli ieslēgt, izmantojot pārslēgšanas slēdzi skapīša iekšpusē.',
+                    childlockMarked: 'Skapīšiem kā arī pāsiem magnētiem ir uzlīmes ar slēdzenes simbolu. Uzlīme arī norāda, kur jāpieliek magnēts, lai atvērtu skapīti, kad slēdzene ir ieslēgta.',
+                    childlockMarkedLabel: 'Kā atpazīt aizsargātos skapīšus:',
+                    childlockMagnets: 'Jūsu lietošanai ir pieejamas divas magnētiskās atslēgas.',
+                    childlockMagnetsLabel: 'Atvēršanas magnēti:',
                     
                     // House Rules
                     sectionRules: '📋 Mājas noteikumi un svarīga informācija',
@@ -1216,6 +1249,16 @@
             setText('outdoor-dining', text.outdoorDining);
             setText('outdoor-meals', text.outdoorMeals);
             setText('outdoor-parking', text.outdoorParking);
+            
+            // Child Lock Magnets
+            setText('childlock-title', text.childlockTitle);
+            setText('childlock-desc', text.childlockDesc);
+            setText('childlock-marked', text.childlockMarked);
+            setText('childlock-marked-label', text.childlockMarkedLabel);
+            setText('childlock-magnets', text.childlockMagnets);
+            setText('childlock-magnets-label', text.childlockMagnetsLabel);
+            setText('zoom-hint-childlock1', text.zoomHint);
+            setText('zoom-hint-childlock2', text.zoomHint);
             
             // House Rules
             setText('section-rules', text.sectionRules);
